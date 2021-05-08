@@ -1,0 +1,34 @@
+addi x18, x0, 0 #to track a[i] offset
+
+add x8, x0, x0 # i iterator (starts at 0)
+outerloop: beq x8, x11, outerexit #i < 10
+add x29, x0, x8 # j iterator (set to i each outer loop)
+
+add x19, x8, x0
+add x19, x19, x19
+add x19, x19, x19
+
+innerloop: beq x29, x11, innerexit #j < 10
+
+addi x29, x29, 1 # increment j by 1
+addi x19, x19, 8 # increment j offset
+
+ld x26, 0x0(x18)     # load a[i] into register
+ld x27, 0x0(x19)     # load a[j] into register
+
+blt x26, x27, bubblesort # if a[i] < a[j], dont restart loop but bubble sort
+
+beq x0,x0, innerloop # unconditional loop
+
+bubblesort: 
+add x5, x0, x26 # int temp = a[i]
+sd x27, 0(x18) # a[i] = a[j]
+sd x5, 0(x19) # a[j] = temp
+
+beq x0, x0, innerloop # restart j
+innerexit:
+
+addi x8, x8, 1 #increment i
+addi, x18, x18, 8 # increment i offset
+beq x0, x0, outerloop
+outerexit:
